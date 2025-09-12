@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QR Thanh Toán</title>
+  <style>
+    :root {
+      --bg1: #0f172a;
+      --bg2: #1e293b;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --primary: #38bdf8;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--text);
+    }
+    header {
+      text-align: center;
+      padding: 16px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(0,0,0,.3);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+      display: grid;
+      gap: 16px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,.4);
+      transition: transform .2s;
+    }
+    .card:hover { transform: translateY(-4px); }
+    .qrbox {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+      cursor: zoom-in;
+      border: 2px solid rgba(255,255,255,.1);
+    }
+    .qrbox img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .meta { flex: 1; }
+    .bank { font-size: 14px; color: var(--muted); }
+    .name { font-size: 16px; font-weight: 600; margin: 4px 0; }
+    .stk {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 15px; font-weight: 600;
+      margin-top: 8px;
+    }
+    .copy {
+      background: none; border: none; cursor: pointer;
+      color: var(--primary);
+      display: flex; align-items: center; gap: 4px;
+      font-size: 14px;
+      transition: transform .1s;
+    }
+    .copy:active { transform: scale(.9); }
+    .copy svg { width: 16px; height: 16px; }
+    /* modal */
+    .modal {
+      position: fixed; inset:0; background: rgba(0,0,0,.8);
+      display: none; place-items: center; z-index: 100;
+    }
+    .modal.open { display: grid; }
+    .modal img { max-width: 90%; max-height: 80%; border-radius: 16px; }
+    /* toast */
+    .toast {
+      position: fixed; bottom: 20px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(30,41,59,.9);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity .3s, transform .3s;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <header>QR Thanh Toán</header>
+  <div class="wrap" id="wrap"></div>
+
+  <div class="modal" id="qrModal" onclick="closeQR()">
+    <img id="qrBig" src="" alt="QR lớn" />
+  </div>
+  <div class="toast" id="toast">Đã sao chép</div>
+
+  <script>
+    const accounts = [
+      {
+        name: "Nguyễn Văn A",
+        bank: "Techcombank",
+        stk: "1903123456789",
+        qr: "qr.jpg"
+      },
+      {
+        name: "Trần Thị B",
+        bank: "Vietcombank",
+        stk: "0123456789",
+        qr: "qr.jpg"
+      },
+      {
+        name: "Shop ABC",
+        bank: "MoMo Wallet",
+        stk: "0933123456",
+        qr: "qr.jpg"
+      }
+    ];
+
+    const wrap = document.getElementById("wrap");
+    accounts.forEach(acc=>{
+      const card = document.createElement("div");
+      card.className="card";
+      card.innerHTML=`
+        <div class="qrbox"><img src="${acc.qr}" alt="QR ${acc.bank}" onclick="openQR('${acc.qr}')"></div>
+        <div class="meta">
+          <div class="bank">${acc.bank}</div>
+          <div class="name">${acc.name}</div>
+          <div class="stk">
+            ${acc.stk}
+            <button class="copy" onclick="copyText('${acc.stk}')">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              Copy
+            </button>
+          </div>
+        </div>
+      `;
+      wrap.appendChild(card);
+    });
+
+    function copyText(txt){
+      navigator.clipboard.writeText(txt).then(()=>{
+        showToast("Đã copy STK: " + txt);
+      });
+    }
+    const toast=document.getElementById("toast");
+    let timer;
+    function showToast(msg){
+      toast.textContent=msg;
+      toast.classList.add("show");
+      clearTimeout(timer);
+      timer=setTimeout(()=>toast.classList.remove("show"),1500);
+    }
+
+    const modal=document.getElementById("qrModal");
+    const qrBig=document.getElementById("qrBig");
+    function openQR(src){
+      qrBig.src=src;
+      modal.classList.add("open");
+    }
+    function closeQR(){
+      modal.classList.remove("open");
+      setTimeout(()=>qrBig.src="",200);
+    }
+  </script>
+</body>
+</html>
