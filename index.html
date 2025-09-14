@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>QR Thanh Toán</title>
+  <title>QR Nguyễn Hoàng Kha</title>
   <style>
     :root {
       --bg1: #0f172a;
@@ -12,12 +12,63 @@
       --text: #f1f5f9;
       --muted: #94a3b8;
       --primary: #38bdf8;
+      /* neon palette */
+      --neon-cyan: #22d3ee;
+      --neon-blue: #38bdf8;
+      --neon-purple: #a78bfa;
     }
     body {
       margin: 0;
       font-family: system-ui, sans-serif;
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      /* base gradient under neon layers */
+      background:
+        radial-gradient(1200px 800px at 10% -10%, rgba(56,189,248,.25), transparent 60%),
+        radial-gradient(900px 700px at 110% 120%, rgba(167,139,250,.25), transparent 60%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
       color: var(--text);
+      overflow-x: hidden;
+    }
+    /* Tech neon background layers */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -20vh -20vw;
+      pointer-events: none;
+      z-index: -1;
+      background:
+        radial-gradient(40% 50% at 20% 30%, rgba(34,211,238,.35), transparent 60%),
+        radial-gradient(35% 45% at 80% 70%, rgba(167,139,250,.35), transparent 60%);
+      filter: blur(60px) saturate(120%);
+      animation: neonFloat 12s ease-in-out infinite alternate;
+    }
+    body::after {
+      /* perspective neon grid */
+      content: "";
+      position: fixed;
+      inset: -40vmax;
+      pointer-events: none;
+      z-index: -1;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(56,189,248,.3) 0 1px, transparent 1px 80px),
+        repeating-linear-gradient(90deg, rgba(56,189,248,.3) 0 1px, transparent 1px 80px);
+      transform: perspective(700px) rotateX(60deg) translateY(-20vmax);
+      transform-origin: top center;
+      mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 60%, transparent);
+      -webkit-mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 60%, transparent);
+      filter: drop-shadow(0 0 6px rgba(56,189,248,.5));
+      opacity: .35;
+      animation: gridShift 30s linear infinite;
+    }
+    @keyframes neonFloat {
+      0% { transform: translate3d(1%, -2%, 0) scale(1); }
+      100% { transform: translate3d(-1%, 2%, 0) scale(1.05); }
+    }
+    @keyframes gridShift {
+      0% { background-position: 0 0, 0 0; }
+      100% { background-position: 0 80px, 80px 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body::before, body::after { animation: none; }
     }
     header {
       text-align: center;
@@ -25,11 +76,15 @@
       font-size: 20px;
       font-weight: 700;
       color: var(--primary);
-      background: rgba(0,0,0,.3);
+      background: rgba(0,0,0,.35);
       backdrop-filter: blur(8px);
       position: sticky;
       top: 0;
       z-index: 50;
+    }
+    header p{
+      font-style: 16px;
+      color: var(--text);
     }
     .wrap {
       max-width: 800px;
@@ -39,16 +94,19 @@
       gap: 16px;
     }
     .card {
-      background: var(--card);
+      background: rgba(30,41,59,.92);
       border-radius: 16px;
       padding: 16px;
       display: flex;
       gap: 16px;
       align-items: center;
-      box-shadow: 0 6px 20px rgba(0,0,0,.4);
+      box-shadow: 0 6px 20px rgba(0,0,0,.45), 0 0 0 1px rgba(56,189,248,.1) inset;
       transition: transform .2s;
     }
-    .card:hover { transform: translateY(-4px); }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 26px rgba(0,0,0,.5), 0 0 0 1px rgba(56,189,248,.2) inset, 0 0 12px -2px rgba(56,189,248,.45);
+    }
     .qrbox {
       width: 100px;
       height: 100px;
@@ -56,7 +114,8 @@
       overflow: hidden;
       flex-shrink: 0;
       cursor: zoom-in;
-      border: 2px solid rgba(255,255,255,.1);
+      border: 2px solid rgba(255,255,255,.08);
+      box-shadow: 0 0 0 1px rgba(56,189,248,.25), 0 0 18px -6px rgba(56,189,248,.45);
     }
     .qrbox img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .meta { flex: 1; }
@@ -75,6 +134,7 @@
       transition: transform .1s;
     }
     .copy:active { transform: scale(.9); }
+    .copy:hover { text-shadow: 0 0 8px rgba(56,189,248,.6); }
     .copy svg { width: 16px; height: 16px; }
     /* modal */
     .modal {
@@ -101,7 +161,9 @@
   </style>
 </head>
 <body>
-  <header>QR Thanh Toán</header>
+  <header>QR Thanh Toán
+    <p>Nguyễn Hoàng Kha</p>
+  </header>
   <div class="wrap" id="wrap"></div>
 
   <div class="modal" id="qrModal" onclick="closeQR()">
@@ -112,23 +174,17 @@
   <script>
     const accounts = [
       {
-        name: "Nguyễn Văn A",
-        bank: "Techcombank",
-        stk: "1903123456789",
-        qr: "qr.jpg"
+        name: "Nguyễn Hoàng Kha",
+        bank: "MBBank",
+        stk: "70047705081999",
+        qr: "mb.svg"
       },
       {
-        name: "Trần Thị B",
+        name: "Nguyễn Hoàng Kha",
         bank: "Vietcombank",
-        stk: "0123456789",
-        qr: "qr.jpg"
+        stk: "1055833228",
+        qr: "vcb.svg"
       },
-      {
-        name: "Shop ABC",
-        bank: "MoMo Wallet",
-        stk: "0933123456",
-        qr: "qr.jpg"
-      }
     ];
 
     const wrap = document.getElementById("wrap");
@@ -136,7 +192,9 @@
       const card = document.createElement("div");
       card.className="card";
       card.innerHTML=`
-        <div class="qrbox"><img src="${acc.qr}" alt="QR ${acc.bank}" onclick="openQR('${acc.qr}')"></div>
+        <div class="qrbox">
+          <img src="${acc.qr}" alt="QR ${acc.bank}" onclick="openQR('${acc.qr}')">
+        </div>
         <div class="meta">
           <div class="bank">${acc.bank}</div>
           <div class="name">${acc.name}</div>
