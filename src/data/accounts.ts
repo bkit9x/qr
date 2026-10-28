@@ -7,7 +7,7 @@ export const BANK_ACCOUNTS: BankAccount[] = [
     bank: 'MBBank',
     bankFullName: 'Ngân hàng Thương mại Cổ phần Quân đội',
     stk: '70047705081999',
-    qr: '/mb.svg',
+    qr: '/mb.png',
     bin: '970422',
     colorTheme: 'blue',
   },
