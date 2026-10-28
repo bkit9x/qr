@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+:root {
+  --bg1: #0f172a;
+  --bg2: #1e293b;
+  --card: #1e293b;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --primary: #38bdf8;
+  --neon-cyan: #22d3ee;
+  --neon-blue: #38bdf8;
+  --neon-purple: #a78bfa;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: #0b1120;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.18) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(167, 139, 250, 0.16) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(15, 23, 42, 0.8) 0px, #0b1120 100%);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* 
+  High-performance Cyber Background:
+  Replaces CPU-bound background-position repaint loops & heavy filter blurs
+  with GPU-accelerated composited layers.
+*/
+.neon-ambient-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle 600px at 20% 25%, rgba(34, 211, 238, 0.15), transparent 70%),
+    radial-gradient(circle 600px at 80% 75%, rgba(167, 139, 250, 0.14), transparent 70%);
+  transform: translateZ(0);
+}
+
+.neon-grid-mesh {
+  position: absolute;
+  inset: -10vmax -10vmax 0 -10vmax;
+  height: 90vh;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(56, 189, 248, 0.14) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.14) 1px, transparent 1px);
+  background-size: 60px 60px;
+  transform: perspective(600px) rotateX(65deg);
+  transform-origin: top center;
+  mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8) 15%, transparent 80%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8) 15%, transparent 80%);
+  transform: translateZ(0);
+}
+
+/* Card custom neon styling - Optimized for 60fps */
+.neon-card {
+  background-color: rgba(24, 33, 47, 0.95);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  contain: content;
+}
+
+.neon-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 12px -2px rgba(56, 189, 248, 0.35);
+}
+
+.neon-qr-box {
+  cursor: zoom-in;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.2), 0 0 12px -4px rgba(56, 189, 248, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.neon-qr-box:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 0 1.5px rgba(56, 189, 248, 0.4), 0 0 16px -2px rgba(56, 189, 248, 0.5);
+}

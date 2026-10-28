@@ -1,0 +1,8 @@
+{
+  "name": "QR Nguyễn Hoàng Kha",
+  "description": "Trang thanh toán chuyển khoản qua mã QR ngân hàng MBBank và Vietcombank cho Nguyễn Hoàng Kha.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
